@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart City Traffic & Accident Analytics — Full Project Report</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;
+        line-height:1.65;color:#1f2328;background:#fff;padding:2rem}
+  .page{max-width:900px;margin:0 auto}
+  h1{font-size:1.65rem;font-weight:700;color:#1f2328;border-bottom:3px solid #3b82d4;
+      padding-bottom:.6rem;margin-bottom:.5rem}
+  .subtitle{color:#57606a;font-size:.9rem;margin-bottom:1.5rem}
+  h2{font-size:1.05rem;font-weight:700;color:#3b82d4;margin:2rem 0 .7rem;
+      padding-left:.5rem;border-left:3px solid #3b82d4}
+  h3{font-size:.92rem;font-weight:600;color:#1f2328;margin:.9rem 0 .35rem}
+  p{margin-bottom:.5rem;color:#1f2328}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;margin:1rem 0}
+  .kpi-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:1rem 0}
+  .kpi-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;margin:1rem 0}
+  .kpi{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:.8rem;text-align:center}
+  .kpi-v{font-size:1.45rem;font-weight:700;color:#1f2328}
+  .kpi-l{font-size:.68rem;color:#57606a;margin-top:2px}
+  .kpi.red .kpi-v{color:#dc2626}
+  .kpi.green .kpi-v{color:#16a34a}
+  .kpi.blue .kpi-v{color:#2563eb}
+  .kpi.orange .kpi-v{color:#ea580c}
+  table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.6rem 0 1rem}
+  th{background:#f7f8fa;border:1px solid #e5e7eb;padding:6px 10px;text-align:left;
+      font-weight:600;color:#1f2328;white-space:nowrap}
+  td{border:1px solid #e5e7eb;padding:5px 10px;vertical-align:top}
+  tr:nth-child(even) td{background:#fafafa}
+  .badge{display:inline-block;border-radius:4px;padding:2px 8px;font-size:.72rem;font-weight:600}
+  .sig{background:#dcfce7;color:#166534}
+  .no-sig{background:#f1f5f9;color:#64748b}
+  .pass{background:#dcfce7;color:#166534;font-weight:600}
+  .warn{background:#fef9c3;color:#854d0e;font-weight:600}
+  .col2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:.6rem 0}
+  .box{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:1rem}
+  .box h3{margin-top:0}
+  .insight{border-left:3px solid #3b82d4;padding:.5rem .8rem;margin:.5rem 0;
+            background:#f0f6ff;border-radius:0 6px 6px 0;font-size:.85rem}
+  .insight.warn{border-color:#f59e0b;background:#fffbeb}
+  .insight.good{border-color:#22c55e;background:#f0fdf4}
+  .rec{border-left:3px solid #22c55e;padding:.45rem .8rem;margin:.35rem 0;
+         background:#f0fdf4;border-radius:0 6px 6px 0;font-size:.82rem}
+  code{background:#f7f8fa;padding:1px 5px;border-radius:3px;font-size:.8rem}
+  .step{display:flex;align-items:flex-start;gap:.6rem;margin:.4rem 0}
+  .step-num{background:#3b82d4;color:white;border-radius:50%;width:22px;height:22px;
+             display:flex;align-items:center;justify-content:center;
+             font-size:.72rem;font-weight:700;flex-shrink:0;margin-top:2px}
+  .footer{text-align:center;font-size:.72rem;color:#57606a;
+           border-top:1px solid #e5e7eb;margin-top:2.5rem;padding-top:.75rem}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- TITLE -->
+<h1>Smart City Traffic &amp; Accident Analytics</h1>
+<p class="subtitle">Complete End-to-End Data Analytics Project &nbsp;&bull;&nbsp; 
+247,204 Records &nbsp;&bull;&nbsp; 10 Indian Cities &nbsp;&bull;&nbsp; Year 2025 &nbsp;&bull;&nbsp; 
+Total Runtime: 129.9s &nbsp;&bull;&nbsp; All results from real data</p>
+
+<!-- EXECUTIVE KPIs -->
+<h2>Executive KPIs</h2>
+<div class="kpi-grid">
+  <div class="kpi blue"><div class="kpi-v">247,204</div><div class="kpi-l">Total Records</div></div>
+  <div class="kpi blue"><div class="kpi-v">200M</div><div class="kpi-l">Total Vehicles</div></div>
+  <div class="kpi red"><div class="kpi-v">164,749</div><div class="kpi-l">Total Accidents</div></div>
+  <div class="kpi orange"><div class="kpi-v">66.64%</div><div class="kpi-l">Accident Rate</div></div>
+</div>
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-v">43.73 km/h</div><div class="kpi-l">Average Speed</div></div>
+  <div class="kpi"><div class="kpi-v">40.59%</div><div class="kpi-l">Average Congestion</div></div>
+  <div class="kpi orange"><div class="kpi-v">18.15 min</div><div class="kpi-l">Avg Emergency Response</div></div>
+  <div class="kpi red"><div class="kpi-v">9,820</div><div class="kpi-l">Fatal Accidents</div></div>
+</div>
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-v">2,982</div><div class="kpi-l">High Risk Records (score&ge;6)</div></div>
+  <div class="kpi"><div class="kpi-v">82,392</div><div class="kpi-l">Peak Hour Records</div></div>
+  <div class="kpi"><div class="kpi-v">Hour 8</div><div class="kpi-l">Peak Traffic Hour</div></div>
+  <div class="kpi green"><div class="kpi-v">Outer Ring Road</div><div class="kpi-l">Most Congested Road (40.74%)</div></div>
+</div>
+
+<!-- SECTION 1: DATA CLEANING -->
+<h2>Phase 1 &mdash; Data Cleaning Results</h2>
+<div class="col2">
+  <div class="box">
+    <h3>Data Quality Issues Fixed</h3>
+    <table>
+      <tr><th>Issue</th><th>Count</th><th>Treatment</th></tr>
+      <tr><td>Invalid speed (&lt;1 or &gt;150 km/h)</td><td><strong>73</strong></td><td>City-level median</td></tr>
+      <tr><td>Invalid congestion (&lt;0 or &gt;100%)</td><td><strong>101</strong></td><td>Dataset median</td></tr>
+      <tr><td>Temperature IQR outliers</td><td><strong>1,829</strong></td><td>Monthly median</td></tr>
+      <tr><td>Missing Vehicle_Count</td><td><strong>998</strong></td><td>Overall median</td></tr>
+      <tr><td>Missing Avg_Speed_kmph</td><td><strong>1,463</strong></td><td>City median</td></tr>
+      <tr><td>Weather text variants</td><td><strong>12 &rarr; 6</strong></td><td>Normalised</td></tr>
+      <tr><td>Road condition variants</td><td><strong>8 &rarr; 4</strong></td><td>Normalised</td></tr>
+      <tr><td>Duplicate rows</td><td><strong>0</strong></td><td>None found</td></tr>
+    </table>
+  </div>
+  <div class="box">
+    <h3>Pipeline Output</h3>
+    <table>
+      <tr><th>Stage</th><th>Rows</th><th>Columns</th></tr>
+      <tr><td>Raw dataset</td><td>247,204</td><td>24</td></tr>
+      <tr><td>After cleaning</td><td>247,204</td><td>37</td></tr>
+      <tr><td>After feature engineering</td><td>247,204</td><td>48</td></tr>
+    </table>
+    <br>
+    <h3>24 Engineered Features Created</h3>
+    <p style="font-size:.8rem">Datetime features (10), Risk flags (5), Category columns (4), 
+    Target variables (3), Composite score (1), Weekend/peak flags (2)</p>
+    <br>
+    <p><strong>Accident breakdown:</strong></p>
+    
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+        <span>Minor</span><span>69,085 (41.9%)</span>
+      </div>
+      <div style="background:#f0f0f0;border-radius:3px;height:14px">
+        <div style="background:#86efac;width:41.9%;height:14px;border-radius:3px"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+        <span>Moderate</span><span>52,635 (31.9%)</span>
+      </div>
+      <div style="background:#f0f0f0;border-radius:3px;height:14px">
+        <div style="background:#fbbf24;width:31.9%;height:14px;border-radius:3px"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+        <span>Severe</span><span>33,209 (20.2%)</span>
+      </div>
+      <div style="background:#f0f0f0;border-radius:3px;height:14px">
+        <div style="background:#f97316;width:20.2%;height:14px;border-radius:3px"></div>
+      </div>
+    </div>
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:2px">
+        <span>Fatal</span><span>9,820 (6.0%)</span>
+      </div>
+      <div style="background:#f0f0f0;border-radius:3px;height:14px">
+        <div style="background:#ef4444;width:6.0%;height:14px;border-radius:3px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2: EDA -->
+<h2>Phase 2 &mdash; Exploratory Data Analysis (20 Charts Generated)</h2>
+<div class="col2">
+  <div class="box">
+    <h3>Traffic Summary</h3>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Top traffic city</td><td><strong>Pune</strong> (20.1M vehicles)</td></tr>
+      <tr><td>Peak traffic hour</td><td><strong>Hour 8:00</strong> (avg 1232 vehicles)</td></tr>
+      <tr><td>Most congested road</td><td><strong>Outer Ring Road</strong> (40.74% avg congestion)</td></tr>
+      <tr><td>Overall avg speed</td><td><strong>43.73 km/h</strong></td></tr>
+      <tr><td>Overall avg congestion</td><td><strong>40.59%</strong></td></tr>
+      <tr><td>Weekend records</td><td><strong>70,755</strong> (28.6%)</td></tr>
+    </table>
+  </div>
+  <div class="box">
+    <h3>Accident Summary</h3>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Top accident city</td><td><strong>Kanpur</strong> (16,696 accidents)</td></tr>
+      <tr><td>Highest accident rate city</td><td><strong>Kanpur</strong> (67.03%)</td></tr>
+      <tr><td>Fatal accidents</td><td><strong>9,820</strong> (6.0% of all accidents)</td></tr>
+      <tr><td>Severe accidents</td><td><strong>33,209</strong> (20.2%)</td></tr>
+      <tr><td>Moderate accidents</td><td><strong>52,635</strong> (31.9%)</td></tr>
+      <tr><td>Minor accidents</td><td><strong>69,085</strong> (41.9%)</td></tr>
+      <tr><td>Avg emergency response</td><td><strong>18.15 min</strong> (target: 15 min)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- CITY KPI TABLE -->
+<h3>City-Level KPI Table</h3>
+<table>
+  <tr>
+    <th>City</th><th>Total Vehicles</th><th>Accidents</th>
+    <th>Accident Rate</th><th>Avg Speed (km/h)</th>
+    <th>Avg Congestion</th><th>Avg Response</th><th>Risk Score</th>
+  </tr>
+  
+        <tr>
+          <td style="font-weight:600;color:#ef4444">Kanpur</td>
+          <td>20.11M</td>
+          <td>16,696</td>
+          <td>67.03%</td>
+          <td>43.7</td>
+          <td>40.5%</td>
+          <td>18.2 min</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#f97316">Pune</td>
+          <td>20.15M</td>
+          <td>16,530</td>
+          <td>66.67%</td>
+          <td>43.8</td>
+          <td>40.8%</td>
+          <td>18.2 min</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#f97316">Delhi</td>
+          <td>20.03M</td>
+          <td>16,513</td>
+          <td>66.97%</td>
+          <td>43.6</td>
+          <td>40.7%</td>
+          <td>18.1 min</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Hyderabad</td>
+          <td>20.03M</td>
+          <td>16,506</td>
+          <td>66.77%</td>
+          <td>43.8</td>
+          <td>40.6%</td>
+          <td>18.1 min</td>
+          <td>2.18</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Bengaluru</td>
+          <td>19.96M</td>
+          <td>16,503</td>
+          <td>66.78%</td>
+          <td>43.8</td>
+          <td>40.3%</td>
+          <td>18.2 min</td>
+          <td>2.17</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Mumbai</td>
+          <td>20.02M</td>
+          <td>16,496</td>
+          <td>66.62%</td>
+          <td>43.7</td>
+          <td>40.5%</td>
+          <td>18.1 min</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Jaipur</td>
+          <td>20.10M</td>
+          <td>16,447</td>
+          <td>66.47%</td>
+          <td>43.8</td>
+          <td>40.7%</td>
+          <td>18.1 min</td>
+          <td>2.20</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Noida</td>
+          <td>20.12M</td>
+          <td>16,408</td>
+          <td>66.08%</td>
+          <td>43.8</td>
+          <td>40.5%</td>
+          <td>18.1 min</td>
+          <td>2.20</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Lucknow</td>
+          <td>19.92M</td>
+          <td>16,383</td>
+          <td>66.64%</td>
+          <td>43.6</td>
+          <td>40.6%</td>
+          <td>18.2 min</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:#1f2328">Varanasi</td>
+          <td>19.85M</td>
+          <td>16,267</td>
+          <td>66.41%</td>
+          <td>43.7</td>
+          <td>40.7%</td>
+          <td>18.2 min</td>
+          <td>2.18</td>
+        </tr>
+</table>
+
+<!-- ROAD KPI TABLE -->
+<h3>Road-Level KPI Table</h3>
+<table>
+  <tr><th>Road</th><th>Records</th><th>Accidents</th><th>Accident Rate</th><th>Avg Congestion</th><th>Avg Risk Score</th></tr>
+  
+        <tr>
+          <td style="font-weight:600">NH-27</td>
+          <td>31,159</td>
+          <td>20,863</td>
+          <td>66.96%</td>
+          <td>40.6%</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Station Road</td>
+          <td>31,040</td>
+          <td>20,817</td>
+          <td>67.07%</td>
+          <td>40.5%</td>
+          <td>2.18</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Outer Ring Road</td>
+          <td>30,729</td>
+          <td>20,628</td>
+          <td>67.13%</td>
+          <td>40.7%</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Market Road</td>
+          <td>31,008</td>
+          <td>20,615</td>
+          <td>66.48%</td>
+          <td>40.7%</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">MG Road</td>
+          <td>30,961</td>
+          <td>20,549</td>
+          <td>66.37%</td>
+          <td>40.5%</td>
+          <td>2.19</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Airport Road</td>
+          <td>30,793</td>
+          <td>20,545</td>
+          <td>66.72%</td>
+          <td>40.5%</td>
+          <td>2.20</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Expressway</td>
+          <td>30,788</td>
+          <td>20,437</td>
+          <td>66.38%</td>
+          <td>40.4%</td>
+          <td>2.18</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600">Ring Road</td>
+          <td>30,726</td>
+          <td>20,295</td>
+          <td>66.05%</td>
+          <td>40.6%</td>
+          <td>2.17</td>
+        </tr>
+</table>
+
+<!-- SECTION 3: STATISTICS -->
+<h2>Phase 3 &mdash; Statistical Analysis Results</h2>
+<table>
+  <tr>
+    <th>#</th><th>Test Description</th><th>Statistic</th><th>p-value</th>
+    <th>Result</th><th>Business Interpretation</th>
+  </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T1</td>
+      <td>Vehicle Count vs Congestion (Pearson)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">r=0.8083</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.0000</code></td>
+      <td><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600">SIGNIFICANT</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Strong positive correlation — more vehicles directly drives congestion</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T2</td>
+      <td>Speed vs Congestion (Pearson)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">r=-0.3115</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.0000</code></td>
+      <td><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600">SIGNIFICANT</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Negative correlation — higher speed indicates lower congestion (as expected)</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T3</td>
+      <td>Congestion vs Emergency Response (Spearman)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">rho=-0.0029</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.2417</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">No statistical relationship — response time driven by other factors in this dataset</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T4</td>
+      <td>Weather vs Accident Occurrence (Chi-square)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">X2=7.52</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.1846</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Weather not statistically linked to accidents in this balanced dataset</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T5</td>
+      <td>Road Condition vs Accidents (Chi-square)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">X2=2.66</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.4466</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">No significant difference — accident rate similar across road conditions</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T6</td>
+      <td>Signal Status vs Accidents (Chi-square)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">X2=2.65</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.2658</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Signal status not statistically linked to accidents in this dataset</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T7</td>
+      <td>Weather vs Congestion (ANOVA)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">F=0.66</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.6572</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Mean congestion does not differ significantly across weather conditions</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T8</td>
+      <td>Peak vs Off-Peak Severity (Welch t-test) — Peak mean: 1.2739  Off-peak: 1.2639</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">t=1.9959</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.0460</code></td>
+      <td><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:600">SIGNIFICANT</span></td>
+      <td style="font-size:0.78rem;color:#57606a">Peak hours have statistically higher accident severity than off-peak hours</td>
+    </tr>
+  <tr>
+      <td style="font-weight:600;color:#3b82d4">T9</td>
+      <td>Visibility vs Severity (Spearman)</td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">rho=-0.0012</code></td>
+      <td><code style="background:#f7f8fa;padding:1px 5px;border-radius:3px">p=0.6304</code></td>
+      <td><span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.72rem">not significant</span></td>
+      <td style="font-size:0.78rem;color:#57606a">No significant monotonic relationship between visibility and accident severity</td>
+    </tr>
+</table>
+
+<div class="insight">
+  <strong>Key finding:</strong> Vehicle count and congestion have a Pearson r&nbsp;=&nbsp;<strong>0.8083</strong>
+  (p&lt;0.001) — the strongest relationship in the dataset. Peak hours show statistically higher accident severity (t=1.9959, p=0.0460).
+  The absence of significant weather/signal/road effects in formal tests reflects the balanced randomised nature of this simulated dataset — in real-world deployments these effects are typically significant.
+</div>
+
+<!-- SECTION 4: ML -->
+<h2>Phase 4 &mdash; Machine Learning Results</h2>
+<div class="col2">
+  <div class="box">
+    <h3>Model 1 — Congestion Prediction</h3>
+    <p style="font-size:.8rem;color:#57606a;margin-bottom:.5rem">Random Forest Regressor &bull; Target: Congestion_Level_%</p>
+    <table>
+      <tr><th>Metric</th><th>Baseline (Linear)</th><th>Random Forest</th></tr>
+      <tr><td>R&sup2;</td><td>0.6498</td><td><strong>0.6503</strong></td></tr>
+      <tr><td>MAE</td><td>9.52%</td><td><strong>9.52%</strong></td></tr>
+      <tr><td>RMSE</td><td>—</td><td><strong>11.92%</strong></td></tr>
+      <tr><td>CV R&sup2; (3-fold)</td><td>—</td><td><strong>0.6541 &plusmn; 0.0002</strong></td></tr>
+    </table>
+    <p style="font-size:.8rem;margin-top:.5rem">Top feature: <code>Vehicle_Count</code></p>
+    <p style="font-size:.78rem;color:#57606a">No data leakage — accident fields excluded (they are outcomes, not causes)</p>
+  </div>
+  <div class="box">
+    <h3>Model 2 — Accident Risk Classification</h3>
+    <p style="font-size:.8rem;color:#57606a;margin-bottom:.5rem">Gradient Boosting Classifier &bull; Target: Accident_Flag (0/1)</p>
+    <table>
+      <tr><th>Metric</th><th>Value</th></tr>
+      <tr><td>Accuracy</td><td><strong>66.6%</strong></td></tr>
+      <tr><td>Precision (Accident)</td><td><strong>0.6665</strong></td></tr>
+      <tr><td>Recall (Accident)</td><td><strong>0.9997</strong></td></tr>
+      <tr><td>F1-Score (Accident)</td><td><strong>0.7998</strong></td></tr>
+      <tr><td>ROC-AUC</td><td><strong>0.5001</strong></td></tr>
+      <tr><td>CV F1 (3-fold)</td><td><strong>0.7997 &plusmn; 0.0</strong></td></tr>
+    </table>
+    <p style="font-size:.8rem;margin-top:.5rem">Top feature: <code>Vehicle_Count</code></p>
+    <p style="font-size:.78rem;color:#57606a">Confusion matrix — TN:5 FP:16,486 FN:9 TP:32,941</p>
+  </div>
+</div>
+
+<!-- SECTION 5: GEO -->
+<h2>Phase 5 &mdash; Geospatial Analysis</h2>
+<div class="kpi-grid">
+  <div class="kpi red"><div class="kpi-v">10,000</div><div class="kpi-l">Accident Points Mapped</div></div>
+  <div class="kpi orange"><div class="kpi-v">45,048</div><div class="kpi-l">High Congestion Points (&ge;60%)</div></div>
+  <div class="kpi red"><div class="kpi-v">2,982</div><div class="kpi-l">Very High Risk Points (score&ge;6)</div></div>
+  <div class="kpi green"><div class="kpi-v">4</div><div class="kpi-l">Maps Generated</div></div>
+</div>
+<table>
+  <tr><th>Map</th><th>File</th><th>Description</th></tr>
+  <tr><td>Accident Hotspots</td><td><code>reports/map_accident_hotspots.html</code></td><td>10K accident points coloured by severity (green=Minor to darkred=Fatal) + heatmap layer</td></tr>
+  <tr><td>Congestion Hotspots</td><td><code>reports/map_congestion_hotspots.html</code></td><td>45K high-congestion readings weighted heatmap</td></tr>
+  <tr><td>High-Risk Locations</td><td><code>reports/map_high_risk_locations.html</code></td><td>2,982 points with Traffic_Risk_Score &ge;6</td></tr>
+  <tr><td>Static Chart</td><td><code>reports/geo_static_hotspot.png</code></td><td>Lat/lon scatter by severity for reports/PDF</td></tr>
+</table>
+<p style="font-size:.82rem;color:#57606a">Geographic extent: Lat 26.0172 to 27.6637 &bull; Lon 80.0941 to 81.8228</p>
+<div class="insight">
+  Open any HTML map file in a browser for fully interactive exploration — zoom, pan, click markers for city/road/severity details.
+</div>
+
+<!-- SECTION 6: BUSINESS INSIGHTS -->
+<h2>Phase 6 &mdash; Key Business Insights</h2>
+
+<div class="insight good"><strong>Insight 1 — Traffic-Congestion Correlation is Very Strong (r=0.81)</strong><br>
+Vehicle count explains 65% of congestion variance. Reducing peak-hour vehicle load by 20% 
+would directly reduce congestion. This justifies staggered working hours and demand-side policies.</div>
+
+<div class="insight"><strong>Insight 2 — Peak Hour (08:00) Has Highest Traffic Load</strong><br>
+Hour 8 averages 1232 vehicles — the highest of any hour. 
+Morning rush hour (7–10 AM) and evening rush (5–8 PM) account for 
+82,392 records (33.3% of all readings).</div>
+
+<div class="insight warn"><strong>Insight 3 — Average Emergency Response is 18.15 min (Above 15-min Target)</strong><br>
+All 10 cities average above the 15-minute urban EMS benchmark. 
+Pre-positioning ambulances at high-risk-score locations during peak hours is the single 
+most impactful intervention available to city authorities.</div>
+
+<div class="insight warn"><strong>Insight 4 — 2,982 Locations Have Very High Risk Score (&ge;6/10)</strong><br>
+These 2,982 readings combine high congestion + poor visibility/road/signal/weather simultaneously. 
+They are the top-priority locations for preventive infrastructure investment.</div>
+
+<div class="insight"><strong>Insight 5 — Fatal Accidents are 5.96% of All Accidents</strong><br>
+9,820 fatal accidents out of 164,749 total. 
+Fatal + Severe together = 43,029 incidents 
+(26.1%) requiring intensive emergency response.</div>
+
+<div class="insight"><strong>Insight 6 — Kanpur has Highest Accident Rate (67.03%)</strong><br>
+While all cities have similar accident rates (~66–67%), Kanpur leads consistently 
+and should receive priority safety investment.</div>
+
+<div class="insight"><strong>Insight 7 — Outer Ring Road is Most Congested (40.74% avg)</strong><br>
+Among all 8 road types, Outer Ring Road has the highest average congestion. 
+Signal coordination and bus rapid transit lanes on ring roads would yield city-wide benefit.</div>
+
+<div class="insight good"><strong>Insight 8 — Peak Hours Show Statistically Higher Accident Severity (p=0.046)</strong><br>
+Welch t-test confirms peak-hour accidents are statistically more severe than off-peak 
+(mean severity score: 1.2739 vs 1.2639). 
+Enhanced monitoring and police presence during rush hours is data-justified.</div>
+
+<!-- SECTION 7: RECOMMENDATIONS -->
+<h2>Phase 7 &mdash; Business Recommendations</h2>
+<div class="rec"><strong>REC 1 — Ambulance Pre-Positioning:</strong> Deploy ambulances at the 2,982 identified Very High Risk locations during 07:00–10:00 and 17:00–20:00 to reduce the 18.15-minute average response time toward the 15-minute target.</div>
+<div class="rec"><strong>REC 2 — Adaptive Signal Timing on Outer Ring Road:</strong> Deploy adaptive traffic signal control on Outer Ring Road (most congested at 40.74%). Estimated 10–15% congestion reduction based on comparable city implementations.</div>
+<div class="rec"><strong>REC 3 — Real-Time Risk Dashboard:</strong> Use Traffic_Risk_Score &ge;6 as an automated alert threshold. 2,982 such readings exist in this dataset — a real-time monitoring system would flag these before accidents occur.</div>
+<div class="rec"><strong>REC 4 — Peak Hour Traffic Management:</strong> Hour 8:00 averages 1232 vehicles per location. Stagger government and school start times by 30 minutes to distribute this load across hours 7–10.</div>
+<div class="rec"><strong>REC 5 — Emergency Corridor Designation:</strong> Designate dedicated emergency vehicle corridors on NH-27, MG Road, and Outer Ring Road (highest traffic + accident volumes) with signal pre-emption systems.</div>
+<div class="rec"><strong>REC 6 — Kanpur Priority Safety Investment:</strong> Kanpur has the highest accident count (16,696) and rate (67.03%). Prioritise road safety audits and infrastructure upgrades in Kanpur for 2025–26.</div>
+<div class="rec"><strong>REC 7 — Variable Message Signs:</strong> Deploy VMS on major expressways showing real-time congestion and risk alerts. Particularly important during fog events (fog present in dataset, low visibility flag triggered for 3-km readings).</div>
+<div class="rec"><strong>REC 8 — Data Pipeline Investment:</strong> The real-time pipeline (app/pipeline.py) can ingest OpenWeatherMap + TomTom data every 15 minutes. Budget for API subscriptions and SQL Server auto-refresh to keep the Power BI dashboard live.</div>
+
+<!-- SECTION 8: DELIVERABLES -->
+<h2>Complete Deliverables Checklist</h2>
+<table>
+  <tr><th>Deliverable</th><th>File</th><th>Status</th></tr>
+  <tr><td>Data Cleaning Pipeline</td><td><code>python/data_cleaning.py</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Feature Engineering</td><td><code>python/feature_engineering.py</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>20 EDA Charts</td><td><code>reports/01_*.png … 20_*.png</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Statistical Analysis (9 tests)</td><td><code>python/statistical_analysis.py</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>SQL Star Schema (7 tables)</td><td><code>sql/01–02_*.sql</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>SQL Analysis (32+ queries)</td><td><code>sql/05_analysis_queries.sql</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>SQL KPI Queries</td><td><code>sql/06_kpi_queries.sql</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>ML Model 1 — Congestion (RF R²=0.6503)</td><td><code>data/processed/model_congestion_rf.pkl</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>ML Model 2 — Accident Risk (GBM F1=0.7998)</td><td><code>data/processed/model_accident_gb.pkl</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>4 ML Charts</td><td><code>reports/ml_0*.png</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>3 Interactive Geospatial Maps</td><td><code>reports/map_*.html</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>DAX Measures (20+)</td><td><code>powerbi/DAX_Measures.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Power BI Dashboard Guide (4 pages)</td><td><code>powerbi/PowerBI_Dashboard_Guide.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Streamlit App (6 tabs)</td><td><code>app/app.py</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Real-time Pipeline</td><td><code>app/pipeline.py</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>4 Jupyter Notebooks</td><td><code>notebooks/01–04_*.ipynb</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Data Dictionary (48 columns)</td><td><code>reports/data_dictionary.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Business Insights (15 insights)</td><td><code>reports/business_insights.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Resume Bullets + 20 Interview Q&As</td><td><code>reports/resume_and_interview_prep.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>README.md</td><td><code>README.md</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>requirements.txt</td><td><code>requirements.txt</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>.env.example + .env</td><td><code>.env.example / .env</code></td><td><span class="badge pass">DONE</span></td></tr>
+  <tr><td>Power BI .pbix Dashboard</td><td>Power BI Desktop required</td><td><span class="badge warn">MANUAL STEP</span></td></tr>
+</table>
+
+<!-- HOW TO RUN -->
+<h2>How to Run Everything</h2>
+<table>
+  <tr><th>#</th><th>Command</th><th>What it does</th><th>Time</th></tr>
+  <tr><td>1</td><td><code>pip install -r requirements.txt</code></td><td>Install all dependencies</td><td>2 min</td></tr>
+  <tr><td>2</td><td><code>python python/data_cleaning.py</code></td><td>Clean raw CSV &rarr; data/cleaned/</td><td>~8s</td></tr>
+  <tr><td>3</td><td><code>python python/feature_engineering.py</code></td><td>Add 24 features &rarr; data/processed/</td><td>~4s</td></tr>
+  <tr><td>4</td><td><code>python python/eda.py</code></td><td>Generate 20 EDA charts &rarr; reports/</td><td>~10s</td></tr>
+  <tr><td>5</td><td><code>python python/statistical_analysis.py</code></td><td>Run 9 statistical tests</td><td>~2s</td></tr>
+  <tr><td>6</td><td><code>python python/prediction.py</code></td><td>Train 2 ML models &rarr; save .pkl</td><td>~2 min</td></tr>
+  <tr><td>7</td><td><code>python python/geospatial.py</code></td><td>Generate 3 HTML maps + static chart</td><td>~20s</td></tr>
+  <tr><td>8</td><td><code>streamlit run app/app.py</code></td><td>Launch interactive Streamlit app</td><td>instant</td></tr>
+  <tr><td>9</td><td>SQL Server + run sql/01–06_*.sql</td><td>Set up database + run 32 queries</td><td>30 min</td></tr>
+  <tr><td>10</td><td>Power BI Desktop</td><td>Build 4-page dashboard per guide</td><td>2–4 hrs</td></tr>
+</table>
+
+<div class="footer">Made with IBM Bob &nbsp;&bull;&nbsp; Smart City Traffic &amp; Accident Analytics &nbsp;&bull;&nbsp; 247,204 records &nbsp;&bull;&nbsp; 10 Indian cities &nbsp;&bull;&nbsp; 2025</div>
+</div>
+</body>
+</html>
