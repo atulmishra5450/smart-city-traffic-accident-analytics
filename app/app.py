@@ -2,14 +2,16 @@
 app.py
 ------
 Streamlit Analytics Application — Smart City Traffic & Accident Analytics
-Loads data directly from data/processed/traffic_processed.csv
-No CSV upload required.
+Loads data from data/processed/traffic_processed.csv.
+If processed files are missing (e.g. on Streamlit Cloud first run),
+the cleaning + feature-engineering pipeline runs automatically.
 
 Run:
     streamlit run app/app.py
 """
 
 import sys
+import subprocess
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -31,10 +33,41 @@ import joblib
 # PATHS
 # ─────────────────────────────────────────────────────────────────────────────
 ROOT           = Path(__file__).parent.parent
+RAW_CSV        = ROOT / "data" / "smart_city_traffic_accident_messy_350k.csv"
 PROCESSED_PATH = ROOT / "data" / "processed" / "traffic_processed.csv"
 MODEL_RF_PATH  = ROOT / "data" / "processed" / "model_congestion_rf.pkl"
 MODEL_GB_PATH  = ROOT / "data" / "processed" / "model_accident_gb.pkl"
 SCALER_PATH    = ROOT / "data" / "processed" / "scaler_accident.pkl"
+
+
+def _run_pipeline():
+    """
+    Run cleaning + feature-engineering when processed files are absent.
+    Called automatically on Streamlit Cloud (or any fresh clone).
+    """
+    # Ensure output directories exist
+    (ROOT / "data" / "cleaned").mkdir(parents=True, exist_ok=True)
+    (ROOT / "data" / "processed").mkdir(parents=True, exist_ok=True)
+
+    python_exe = sys.executable
+
+    with st.spinner("First-time setup: cleaning raw data (this takes ~30 seconds)..."):
+        result = subprocess.run(
+            [python_exe, str(ROOT / "python" / "data_cleaning.py")],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            st.error("data_cleaning.py failed:\n" + result.stderr[-2000:])
+            st.stop()
+
+    with st.spinner("Building engineered features (~15 seconds)..."):
+        result = subprocess.run(
+            [python_exe, str(ROOT / "python" / "feature_engineering.py")],
+            capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            st.error("feature_engineering.py failed:\n" + result.stderr[-2000:])
+            st.stop()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -102,12 +135,22 @@ def insight(text, kind=""):
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LOAD DATA (cached — loads once, stays in memory)
+# Auto-runs pipeline if processed files are missing (Streamlit Cloud support)
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner="Loading Smart City data...")
 def load_data():
     if not PROCESSED_PATH.exists():
-        st.error(f"Data file not found: {PROCESSED_PATH}\nRun: python python/data_cleaning.py && python python/feature_engineering.py")
-        st.stop()
+        if not RAW_CSV.exists():
+            st.error(
+                "Raw dataset not found. Expected at:\n"
+                f"`{RAW_CSV}`\n\n"
+                "Please ensure `data/smart_city_traffic_accident_messy_350k.csv` "
+                "is present in the repository."
+            )
+            st.stop()
+        # Auto-run the pipeline on first launch
+        _run_pipeline()
+
     df = pd.read_csv(PROCESSED_PATH)
     # Ensure correct types
     df["Accident_Flag"]    = df["Accident_Flag"].astype(int)

@@ -1,5 +1,4 @@
 # Smart City Traffic & Accident Analytics - .gitignore
-# Rename this file to .gitignore
 
 # Environment & secrets
 .env
@@ -13,11 +12,13 @@ venv/
 env/
 .venv/
 
-# Data files (large CSVs)
+# Raw and intermediate data (large files - keep out of git)
 data/raw/
 data/cleaned/
-data/processed/*.csv
-data/processed/*.pkl
+# NOTE: data/processed/ files ARE committed so Streamlit Cloud can use them.
+# Uncomment to exclude locally:
+# data/processed/*.csv
+# data/processed/*.pkl
 
 # OS
 .DS_Store
