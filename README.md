@@ -1,9 +1,11 @@
 # Smart City Traffic & Accident Analytics
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-green)](https://streamlit.io)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Live%20App-FF4B4B?logo=streamlit&logoColor=white)](https://smart-city-traffic-accident.streamlit.app/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange)](https://scikit-learn.org)
 [![folium](https://img.shields.io/badge/Folium-Maps-red)](https://python-visualization.github.io/folium)
+
+### 🚦 [Live App → smart-city-traffic-accident.streamlit.app](https://smart-city-traffic-accident.streamlit.app/)
 
 ---
 
@@ -250,6 +252,8 @@ Open any map directly in a browser — fully interactive (zoom, click, tooltip).
 
 ## Streamlit App — 6 Tabs
 
+> **Live:** [https://smart-city-traffic-accident.streamlit.app/](https://smart-city-traffic-accident.streamlit.app/)
+
 | Tab | Content |
 |-----|---------|
 | Overview | 8 KPI cards, monthly traffic, accident trends, congestion comparison |
@@ -283,6 +287,8 @@ python python/geospatial.py            # generate 3 HTML maps
 streamlit run app/app.py
 ```
 Opens at **http://localhost:8501** — no upload needed, loads data automatically.
+
+Or visit the **hosted live app**: [https://smart-city-traffic-accident.streamlit.app/](https://smart-city-traffic-accident.streamlit.app/)
 
 ### Open Jupyter notebooks
 ```bash
